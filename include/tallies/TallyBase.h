@@ -88,7 +88,7 @@ public:
    * A function which computes and stores the sum and mean of the tally across all bins for a
    * particular score.
    */
-  void computeSumAndMean();
+  virtual void computeSumAndMean();
 
   /**
    * A function which gathers the sums and means from all tallies linked to this tally.
