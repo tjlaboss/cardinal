@@ -45,7 +45,7 @@ public:
    * @return a pair where the first entry is the filter index in the global filter array and the
    * second entry is the OpenMC filter
    */
-  virtual std::pair<unsigned int, openmc::Filter *> spatialFilter() = 0;
+  virtual std::pair<unsigned int, std::vector<openmc::Filter *>> spatialFilter() = 0;
 
   /**
    * A function to initialize the tally object. Override with care.
@@ -88,7 +88,7 @@ public:
    * A function which computes and stores the sum and mean of the tally across all bins for a
    * particular score.
    */
-  void computeSumAndMean();
+  virtual void computeSumAndMean();
 
   /**
    * A function which gathers the sums and means from all tallies linked to this tally.

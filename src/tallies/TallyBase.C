@@ -451,7 +451,7 @@ TallyBase::initializeTally()
     }
   }
 
-  auto [index, spatial_filter] = spatialFilter();
+  auto [index, spatial_filters] = spatialFilter();
   _filter_index = index;
 
   std::vector<openmc::Filter *> filters;
@@ -459,7 +459,8 @@ TallyBase::initializeTally()
     filters.push_back(filter->getWrappedFilter());
   // We add the spatial filter last to minimize the number of cache
   // misses during the OpenMC -> Cardinal transfer.
-  filters.push_back(spatial_filter);
+  for (auto & filter : spatial_filters)
+    filters.push_back(filter);
 
   // Create the tally, assign the required filters and apply the triggers.
   _local_tally_index = openmc::model::tallies.size();
