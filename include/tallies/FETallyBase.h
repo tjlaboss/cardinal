@@ -44,9 +44,8 @@ class FETallyBase : public TallyBase
     protected:
         virtual Real storeResultsInner(const std::vector<unsigned int> & var_numbers,
                                        unsigned int local_score,
-                                       unsigned int global_score,
-                                       std::vector<xt::xtensor<double, 1>> tally_vals,
-                                       bool norm_by_src_rate) override;
+                                       const std::vector<OMCTensor> & tally_vals,
+                                       bool norm_by_src_rate = true) override;
 
         std::pair<Real, Real> computeIntegral(FunctionSeries* function);
 

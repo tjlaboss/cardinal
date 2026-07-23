@@ -2242,7 +2242,7 @@ OpenMCCellAverageProblem::makeFunctionSeries(std::string name, std::string serie
   params.set<std::vector<Real>>("physical_bounds") = bounds;
   params.set<MooseEnum>("expansion_type") = "orthonormal";
   params.set<bool>("print_when_set") = true;
-  
+
   addFunction("FunctionSeries", name, params);
 
   auto function = dynamic_cast<FunctionSeries*>(&getFunction(name));

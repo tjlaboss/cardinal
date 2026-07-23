@@ -425,6 +425,32 @@ TallyBase::initializeTally()
   _current_raw_tally_std_dev.resize(_tally_score.size());
   _previous_tally.resize(_tally_score.size());
 
+  if (_needs_global_tally)
+  {
+    _global_sum_tally.clear();
+    _global_sum_tally.resize(_tally_score.size(), 0.0);
+  }
+
+  // create the global tally for normalization; we make sure to use the
+  // same estimator as the local tally
+  if (addingGlobalTally())
+  {
+    _global_tally_index = openmc::model::tallies.size();
+    _global_tally = openmc::Tally::create();
+    _global_tally->set_scores(_tally_score);
+    _global_tally->estimator_ = _estimator;
+
+    // Add a universe filter with the root universe if running in random ray mode.
+    if (_openmc_problem.runRandomRay())
+    {
+      // These vectors are required for OpenMC::span.
+      std::vector<openmc::Filter *> uni_filter = {openmc::Filter::create("universe")};
+      std::vector<int> root_uni = {openmc::model::root_universe};
+      dynamic_cast<openmc::UniverseFilter *>(uni_filter.back())->set_universes(root_uni);
+      _global_tally->set_filters(uni_filter);
+    }
+  }
+
   auto [index, spatial_filters] = spatialFilter();
   _filter_index = index;
 

@@ -102,16 +102,16 @@ ALL_MODULES         := no
 
 # you may opt to enable additional modules by listing them here; any modules required
 # by third-party dependencies will be re-enabled if necessary
-FLUID_PROPERTIES    := yes
-HEAT_TRANSFER       := yes
-NAVIER_STOKES       := yes
-RAY_TRACING         := yes
-REACTOR             := yes
-SOLID_MECHANICS     := yes
-SOLID_PROPERTIES    := yes
-STOCHASTIC_TOOLS    := yes
-SUBCHANNEL          := yes
-THERMAL_HYDRAULICS  := yes
+FLUID_PROPERTIES           := yes
+HEAT_TRANSFER              := yes
+NAVIER_STOKES              := yes
+RAY_TRACING                := yes
+REACTOR                    := yes
+SOLID_MECHANICS            := yes
+SOLID_PROPERTIES           := yes
+STOCHASTIC_TOOLS           := yes
+SUBCHANNEL                 := yes
+THERMAL_HYDRAULICS         := yes
 FUNCTIONAL_EXPANSION_TOOLS := yes
 
 # Configure the optional dependencies (NekRS, OpenMC, submodules, etc.)

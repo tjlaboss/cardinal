@@ -75,12 +75,11 @@ FETallyBase::computeSumAndMean()
 { 
   for (unsigned int score = 0; score < _tally_score.size(); ++score)
   {
-    auto xt_coeffs = xt::view(_local_tally->results_,
-                                 xt::all(),
-                                 score,
-                                 static_cast<int>(openmc::TallyResult::SUM));
-    xt_coeffs /= _local_tally->n_realizations_;
-    std::vector<Real> coeffs(xt_coeffs.begin(), xt_coeffs.end());
+    auto coeffs_view = _local_tally->results_.slice(openmc::tensor::all,
+                                                      score,
+                                                      static_cast<int>(openmc::TallyResult::SUM));
+    coeffs_view /= _local_tally->n_realizations_;
+    std::vector<Real> coeffs(coeffs_view.begin(), coeffs_view.end());
     _function->setCoefficients(coeffs);
     auto [integral, volume] = computeIntegral(_function);
     _local_sum_tally[score] = integral;
@@ -91,16 +90,14 @@ FETallyBase::computeSumAndMean()
 Real
 FETallyBase::storeResultsInner(const std::vector<unsigned int> & var_numbers,
                                  unsigned int local_score,
-                                 unsigned int global_score,
-                                 std::vector<xt::xtensor<double, 1>> tally_vals,
+                                 const std::vector<OMCTensor> & tally_vals,
                                  bool norm_by_src_rate)
 {
   Real total = 0.0;
-  auto xt_coeffs = xt::view(_local_tally->results_,
-                            xt::all(),
-                            local_score,
-                            static_cast<int>(openmc::TallyResult::SUM));
-  std::vector<Real> coeffs(xt_coeffs.begin(), xt_coeffs.end());
+  auto coeffs_view = _local_tally->results_.slice(openmc::tensor::all,
+                                                    local_score,
+                                                    static_cast<int>(openmc::TallyResult::SUM));
+  std::vector<Real> coeffs(coeffs_view.begin(), coeffs_view.end());
   _function->setCoefficients(coeffs);
   return total;
 }
