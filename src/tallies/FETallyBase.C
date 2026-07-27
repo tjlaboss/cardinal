@@ -82,8 +82,13 @@ FETallyBase::computeSumAndMean()
     std::vector<Real> coeffs(coeffs_view.begin(), coeffs_view.end());
     _function->setCoefficients(coeffs);
     auto [integral, volume] = computeIntegral(_function);
-    _local_sum_tally[score] = integral;
-    _local_mean_tally[score] = integral / volume;
+
+    // The zeroth-order coefficient is already the volume-integrated tally quantity,
+    // so it is used directly as the domain sum. This matches how a cell tally's
+    // single-bin sum normalizes against the global tally, and avoids relying on
+    // quadrature reconstruction (computeIntegral) for the normalization sum itself.
+    _local_sum_tally[score] = coeffs[0];
+    _local_mean_tally[score] = coeffs[0] / volume;
   }
 }
 
