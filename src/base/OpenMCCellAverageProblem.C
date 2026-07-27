@@ -2231,6 +2231,40 @@ OpenMCCellAverageProblem::findCell(const Point & point)
   return !openmc::exhaustive_find_cell(_particle);
 }
 
+FunctionSeries*
+OpenMCCellAverageProblem::makeFunctionSeries(std::string name, std::string series_type,
+                                             std::vector<unsigned int> orders, std::vector<Real> bounds)
+{
+  InputParameters params = _factory.getValidParams("FunctionSeries");
+
+  if (series_type == "Cartesian")
+  {
+    params.set<MooseEnum>("series_type") = "Cartesian";
+    for (std::string dim: std::vector{"x","y","z"})
+    {
+      params.set<MooseEnum>(dim) = "Legendre";
+    }
+  }
+
+  if (series_type == "CylindricalDuo")
+  {
+    params.set<MooseEnum>("series_type") = "CylindricalDuo";
+    params.set<MooseEnum>("z") = "Legendre";
+    params.set<MooseEnum>("disc") = "Zernike";
+  }
+
+  params.set<std::vector<unsigned int>>("orders") = orders;
+  params.set<std::vector<Real>>("physical_bounds") = bounds;
+  params.set<MooseEnum>("expansion_type") = "orthonormal";
+  params.set<bool>("print_when_set") = true;
+
+  addFunction("FunctionSeries", name, params);
+
+  auto function = dynamic_cast<FunctionSeries*>(&getFunction(name));
+  function->enforceSize(true);
+  return function;
+}
+
 void
 OpenMCCellAverageProblem::addExternalVariables()
 {

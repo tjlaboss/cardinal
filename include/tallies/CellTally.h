@@ -35,7 +35,7 @@ public:
    * @return a pair where the first entry is the filter index in the global filter array and the
    * second entry is an OpenMC distributed cell filter
    */
-  virtual std::pair<unsigned int, openmc::Filter *> spatialFilter() override;
+  virtual std::pair<unsigned int, std::vector<openmc::Filter *>> spatialFilter() override;
 
   /**
    * CellTally overrides 'setRelaxation' to ensure relaxation is not being applied when skinning
