@@ -32,6 +32,7 @@
 #endif
 
 /// Forward declarations to avoid cyclic dependencies.
+class OpenMCCellMaterialFill;
 class OpenMCVolumeCalculation;
 
 /**
@@ -552,11 +553,24 @@ protected:
 
   /**
    * When using the 'identical_cell_fills' feature, this is used to determine the
-   * contained material cells in each parent cell by applying a uniform shift
-   * @param[in] cell_info cell index, instance pair
-   * @return material cells contained within the given cell
+   * new instance of a cell contained in 'cell_info'
+   * @param[in] cell_info cell index, instance pair of the containing cell
+   * @param[in] cc_idx index in the openmc::model::cells array for a cell contained in 'cell_info'
+   * @param[in] cc_instance_idx_to_shift the index in the containedCells instance array for the
+   * instance we want to shift
+   * @return a shifted instance
    */
-  containedCells shiftCellInstances(const cellInfo & cell_info) const;
+  int containedCellInstanceShift(const cellInfo & cell_info,
+                                 int32_t cc_idx,
+                                 int32_t cc_instance_idx_to_shift) const;
+
+  /**
+   * When using the 'identical_cell_fills' feature, this is use to get a list of
+   * contained cells and their instances for a given 'cell_info'.
+   * @param[in] cell_info the containing cell
+   * @return the cells contained in 'cell_info'. Instances are not shifted.
+   */
+  const containedCells & unshiftedContainedCells(const cellInfo & cell_info) const;
 
   /**
    * Whether this cell overlaps with ANY value in the given subdomain set
@@ -566,13 +580,6 @@ protected:
    */
   bool cellMapsToSubdomain(const cellInfo & cell_info,
                            const std::unordered_set<SubdomainID> & id) const;
-
-  /**
-   * Get all of the material cells contained within this cell
-   * @param[in] cell_info cell index, instance pair
-   * @return all material cells contained in the given cell
-   */
-  containedCells containedMaterialCells(const cellInfo & cell_info) const;
 
   /**
    * Delete the OpenMC DAGMC geometry and re-generate the CSG geometry data structures in-place.
@@ -644,7 +651,9 @@ protected:
    * @param[out] global global mapping of the pushed back values to the cells
    */
   template <typename T>
-  void gatherCellVector(std::vector<T> & local, std::vector<unsigned int> & n_local, std::map<cellInfo, std::vector<T>> & global);
+  void gatherCellVector(std::vector<T> & local,
+                        std::vector<unsigned int> & n_local,
+                        std::map<cellInfo, std::vector<T>> & global);
 
   /**
    * Get the feedback which this element provides to OpenMC
@@ -1173,4 +1182,7 @@ private:
 
   /// Mapping from subdomain IDs to the reference density (kg/m3).
   std::map<SubdomainID, Real> _subdomain_to_ref_density;
+
+  /// Mapping from cell index to the OpenMC Cell Material Modifier that contains its material list
+  std::map<int32_t, OpenMCCellMaterialFill *> _cell_material_modifiers;
 };
