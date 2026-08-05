@@ -17,7 +17,6 @@
 /********************************************************************/
 
 #include "ZernikeTally.h"
-#include <iostream>
 
 registerMooseObject("CardinalApp", ZernikeTally);
 
@@ -44,7 +43,6 @@ ZernikeTally::ZernikeTally(const InputParameters & parameters)
 
   std::string func_name = _tally_score.at(0) + "_" + _function_suffix;
   _function = _openmc_problem.makeFunctionSeries(func_name, "CylindricalDuo", _orders, bounds);
-  std::cout<<"\n\n\n\n\033[92mCONSTRUCTOR\033[0m\n\n\n\n"<<std::endl;
 };
 
 std::pair<unsigned int, std::vector<openmc::Filter *>>
@@ -68,6 +66,5 @@ ZernikeTally::spatialFilter()
   zernike_filter->set_y(_centroid(1));
   filters.push_back(zernike_filter);
 
-  std::cout<<"\n\n\n\n\033[92mSPTLFILTER\033[0m\n\n\n\n"<<std::endl;
   return std::make_pair(first_id, filters);
 }

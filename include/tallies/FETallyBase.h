@@ -47,7 +47,8 @@ class FETallyBase : public TallyBase
                                        const std::vector<OMCTensor> & tally_vals,
                                        bool norm_by_src_rate = true) override;
 
-        std::pair<Real, Real> computeIntegral(FunctionSeries* function);
+        /// Physical volume of the expansion domain (active local mesh, reduced across ranks).
+        Real computeVolume();
 
         virtual int getNumBins() = 0;
 
@@ -55,4 +56,7 @@ class FETallyBase : public TallyBase
 
         std::string _function_suffix;
         FunctionSeries* _function;
+
+        /// Expansion volume cached by computeSumAndMean, reused by storeResultsInner.
+        Real _expansion_volume = 0.0;
 };
